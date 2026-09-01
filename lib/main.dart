@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; // Mengimpor pustaka UI Flutter
+import 'barang_card.dart'; // Mengimpor komponen BarangCard
 
 void main() => runApp(const MyApp()); // Fungsi utama untuk menjalankan aplikasi
 
@@ -8,7 +9,7 @@ class MyApp extends StatelessWidget {
   // Data barang koperasi
   static const List<Map<String, dynamic>> daftarBarang = [
     {'nama': 'Buku Tulis', 'anggota': 3000, 'umum': 3500, 'stok': 40, 'kategori': 'ATK'},
-    {'nama': 'Pulpen', 'anggota': 2500, 'umum': 3000, 'stok': 25, 'kategori': 'ATK'},
+    {'nama': 'Pulpen', 'anggota': 2500, 'umum': 3000, 'stok': 0, 'kategori': 'ATK'},
     {'nama': 'Roti', 'anggota': 5000, 'umum': 5500, 'stok': 15, 'kategori': 'Makanan'},
     {'nama': 'Pensil', 'anggota': 2000, 'umum': 2500, 'stok': 30, 'kategori': 'ATK'},
     {'nama': 'Penghapus', 'anggota': 1500, 'umum': 2000, 'stok': 20, 'kategori': 'ATK'},
@@ -31,58 +32,24 @@ class MyApp extends StatelessWidget {
 
         // Menampilkan daftar barang menggunakan ListView.builder
         body: ListView.builder(
-          itemCount: daftarBarang.length,
+          // Hanya menampilkan barang yang stoknya masih ada
+          itemCount: daftarBarang
+              .where((barang) => barang['stok'] > 0)
+              .length,
+
           itemBuilder: (context, index) {
-            final barang = daftarBarang[index];
+            // Mengambil barang yang stoknya masih ada
+            final barang = daftarBarang
+                .where((barang) => barang['stok'] > 0)
+                .toList()[index];
 
-            // Menentukan ikon berdasarkan kategori
-            IconData ikon;
-
-            if (barang['kategori'] == 'ATK') {
-              ikon = Icons.edit;
-            } else if (barang['kategori'] == 'Makanan') {
-              ikon = Icons.fastfood;
-            } else {
-              ikon = Icons.local_drink;
-            }
-
-            // Card digunakan untuk menampilkan informasi barang
-            return Card(
-              // Memberikan jarak 12 piksel dari tepi layar
-              margin: const EdgeInsets.all(12),
-
-              // Memberikan bayangan pada Card
-              elevation: 4,
-
-              // ListTile menyusun informasi barang dengan lebih rapi
-              child: ListTile(
-                // Ikon barang di sebelah kiri
-                leading: Icon(ikon),
-
-                // Nama barang dibuat lebih besar dan tebal
-                title: Text(
-                  barang['nama'],
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                // Menampilkan harga anggota dan harga umum
-                subtitle: Text(
-                  'Anggota Rp${barang['anggota']} | Umum Rp${barang['umum']}',
-                ),
-
-                // Menampilkan jumlah stok di sebelah kanan
-                trailing: Text(
-                  'Stok ${barang['stok']}',
-                  style: TextStyle(
-                    color: barang['stok'] == 0
-                        ? Colors.red
-                        : Colors.black,
-                  ),
-                ),
-              ),
+            // Memanggil komponen BarangCard
+            return BarangCard(
+              nama: barang['nama'],
+              hargaAnggota: barang['anggota'],
+              stok: barang['stok'],
+              kategori: barang['kategori'],
+              sorot: barang['nama'] == 'Buku Tulis',
             );
           },
         ),
