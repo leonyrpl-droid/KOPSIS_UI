@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart'; // Mengimpor pustaka UI Flutter
-import 'barang_card.dart'; // Mengimpor komponen BarangCard
+import 'package:flutter/material.dart';
+import 'barang_card.dart';
 
-void main() => runApp(const MyApp()); // Fungsi utama untuk menjalankan aplikasi
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Menyaring barang berdasarkan kata pencarian
+    // Menyaring barang berdasarkan stok dan kata pencarian
     final hasilCari = MyApp.daftarBarang
         .where((barang) => barang['stok'] > 0)
         .where(
@@ -54,7 +54,6 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // Menampilkan bar judul di bagian atas layar
         appBar: AppBar(
           title: const Text('Koperasi Sekolah'),
         ),
@@ -75,19 +74,45 @@ class _MyAppState extends State<MyApp> {
               },
             ),
 
-            // Menampilkan daftar hasil pencarian
-            Expanded(
-              child: ListView.builder(
-                itemCount: hasilCari.length,
-                itemBuilder: (context, index) {
-                  final barang = hasilCari[index];
+            // Menampilkan lebar layar
+            Text(
+              'Lebar layar: '
+              '${MediaQuery.of(context).size.width.toStringAsFixed(0)}',
+            ),
 
-                  return BarangCard(
-                    nama: barang['nama'],
-                    hargaAnggota: barang['anggota'],
-                    stok: barang['stok'],
-                    kategori: barang['kategori'],
-                    sorot: barang['nama'] == 'Buku Tulis',
+            // Grid responsif
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  int kolom;
+
+                  if (constraints.maxWidth < 600) {
+                    kolom = 1;
+                  } else if (constraints.maxWidth < 900) {
+                    kolom = 2;
+                  } else {
+                    kolom = 3;
+                  }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(4),
+                    gridDelegate:
+                        SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: kolom,
+                      childAspectRatio: 2.5,
+                    ),
+                    itemCount: hasilCari.length,
+                    itemBuilder: (context, index) {
+                      final barang = hasilCari[index];
+
+                      return BarangCard(
+                        nama: barang['nama'],
+                        hargaAnggota: barang['anggota'],
+                        stok: barang['stok'],
+                        kategori: barang['kategori'],
+                        sorot: barang['nama'] == 'Buku Tulis',
+                      );
+                    },
                   );
                 },
               ),
