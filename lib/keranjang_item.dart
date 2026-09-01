@@ -18,7 +18,21 @@ class _KeranjangItemState extends State<KeranjangItem> {
   int jumlah = 1;
 
   @override
+  void initState() {
+    super.initState();
+    print('initState dipanggil');
+  }
+
+  @override
+  void dispose() {
+    print('dispose dipanggil');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('build dipanggil');
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -32,7 +46,9 @@ class _KeranjangItemState extends State<KeranjangItem> {
             });
           },
         ),
+
         Text(jumlah.toString()),
+
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
@@ -41,7 +57,7 @@ class _KeranjangItemState extends State<KeranjangItem> {
                 jumlah++;
               });
 
-              debugPrint('Jumlah: $jumlah');
+              print('Jumlah: $jumlah');
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -51,7 +67,9 @@ class _KeranjangItemState extends State<KeranjangItem> {
             }
           },
         ),
+
         const SizedBox(width: 10),
+
         Text(
           'Total: Rp${jumlah * widget.harga}',
         ),
