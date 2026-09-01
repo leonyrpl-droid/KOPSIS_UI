@@ -3,7 +3,7 @@ import 'barang_card.dart'; // Mengimpor komponen BarangCard
 
 void main() => runApp(const MyApp()); // Fungsi utama untuk menjalankan aplikasi
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   // Data barang koperasi
@@ -21,7 +21,36 @@ class MyApp extends StatelessWidget {
   ];
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late TextEditingController _controller;
+  String kataCari = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Menyaring barang berdasarkan kata pencarian
+    final hasilCari = MyApp.daftarBarang
+        .where((barang) => barang['stok'] > 0)
+        .where(
+          (barang) =>
+              barang['nama'].toLowerCase().contains(kataCari),
+        )
+        .toList();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -30,28 +59,40 @@ class MyApp extends StatelessWidget {
           title: const Text('Koperasi Sekolah'),
         ),
 
-        // Menampilkan daftar barang menggunakan ListView.builder
-        body: ListView.builder(
-          // Hanya menampilkan barang yang stoknya masih ada
-          itemCount: daftarBarang
-              .where((barang) => barang['stok'] > 0)
-              .length,
+        body: Column(
+          children: [
+            // Kotak pencarian
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                hintText: 'Cari barang...',
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (nilai) {
+                setState(() {
+                  kataCari = nilai.toLowerCase();
+                });
+              },
+            ),
 
-          itemBuilder: (context, index) {
-            // Mengambil barang yang stoknya masih ada
-            final barang = daftarBarang
-                .where((barang) => barang['stok'] > 0)
-                .toList()[index];
+            // Menampilkan daftar hasil pencarian
+            Expanded(
+              child: ListView.builder(
+                itemCount: hasilCari.length,
+                itemBuilder: (context, index) {
+                  final barang = hasilCari[index];
 
-            // Memanggil komponen BarangCard
-            return BarangCard(
-              nama: barang['nama'],
-              hargaAnggota: barang['anggota'],
-              stok: barang['stok'],
-              kategori: barang['kategori'],
-              sorot: barang['nama'] == 'Buku Tulis',
-            );
-          },
+                  return BarangCard(
+                    nama: barang['nama'],
+                    hargaAnggota: barang['anggota'],
+                    stok: barang['stok'],
+                    kategori: barang['kategori'],
+                    sorot: barang['nama'] == 'Buku Tulis',
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
