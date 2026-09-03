@@ -8,7 +8,7 @@ class MyApp extends StatefulWidget {
 
   // Data barang koperasi
   static const List<Map<String, dynamic>> daftarBarang = [
-    {'nama': 'Buku Tulis', 'anggota': 3000, 'umum': 3500, 'stok': 40, 'kategori': 'ATK'},
+    {'nama': 'Buku Tulis Bergaris 58 Lembar Sampul Tebal', 'anggota': 3000, 'umum': 3500, 'stok': 40, 'kategori': 'ATK'},
     {'nama': 'Pulpen', 'anggota': 2500, 'umum': 3000, 'stok': 0, 'kategori': 'ATK'},
     {'nama': 'Roti', 'anggota': 5000, 'umum': 5500, 'stok': 15, 'kategori': 'Makanan'},
     {'nama': 'Pensil', 'anggota': 2000, 'umum': 2500, 'stok': 30, 'kategori': 'ATK'},
