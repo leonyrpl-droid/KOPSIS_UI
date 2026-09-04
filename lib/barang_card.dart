@@ -34,7 +34,7 @@ class BarangCard extends StatelessWidget {
 
             const SizedBox(width: 10),
 
-            // Nama, harga, dan kategori
+            // Nama, harga, dan kategori (Petunjuk 1 & 2)
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
